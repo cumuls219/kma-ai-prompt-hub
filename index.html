@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#102b53">
+  <meta name="description" content="업무 수행과 검증·수정 이력을 재현 가능한 범용 프롬프트로 정리하는 AI 업무자산화 도구">
+  <title>AI 업무자산화 · 범용 프롬프트 공유</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --navy:#102b53;--deep:#09244d;--blue:#126cbb;--sky:#eaf5ff;--border:#dce7f2;
+      --text:#172e4d;--muted:#5d718a;--paper:#fff;--bg:#f4f8fd;
+      --shadow:0 18px 50px rgba(15,50,91,.08);--radius:22px;
+      font-family:Pretendard,"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,-apple-system,sans-serif;
+    }
+    *,*::before,*::after{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:var(--bg);color:var(--text);line-height:1.62;-webkit-font-smoothing:antialiased}
+    button,input,textarea{font:inherit}
+    button:focus-visible,a:focus-visible,summary:focus-visible,textarea:focus-visible{outline:3px solid #2c9ce7;outline-offset:3px}
+    .shell{width:min(1040px,calc(100% - 40px));margin:0 auto}
+    header{position:relative;color:white;background:linear-gradient(124deg,#0c254d,#15568a 74%,#1872b4);overflow:hidden}
+    header:before{content:"";position:absolute;width:520px;height:520px;border:1px solid rgba(255,255,255,.12);border-radius:50%;right:-130px;top:-250px;box-shadow:0 0 0 80px rgba(255,255,255,.035),0 0 0 165px rgba(255,255,255,.024)}
+    .topbar{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:24px 0 0;position:relative;z-index:1}
+    .brand{display:flex;align-items:center;gap:11px;color:#fff;text-decoration:none;font-size:14px;font-weight:700;letter-spacing:-.025em}
+    .brand-mark{display:grid;place-items:center;width:33px;height:33px;border-radius:10px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.28)}
+    .top-label{font-size:12px;letter-spacing:.05em;color:#d6ecff;border:1px solid rgba(255,255,255,.26);background:rgba(255,255,255,.08);padding:5px 12px;border-radius:999px}
+    .hero{position:relative;z-index:1;padding:73px 0 95px}
+    .eyebrow{display:inline-flex;align-items:center;gap:9px;font-size:13px;font-weight:800;color:#b9e4ff;letter-spacing:.15em}
+    .eyebrow i{display:inline-block;width:27px;height:2px;border-radius:3px;background:#57b7ef}
+    h1{font-size:clamp(32px,5.2vw,52px);letter-spacing:-.065em;line-height:1.24;margin:17px 0 20px;max-width:790px;word-break:keep-all}
+    .hero p{font-size:clamp(14px,2vw,17px);color:#dceefe;line-height:1.9;margin:0;max-width:730px;word-break:keep-all}
+    .hero b{color:#fff}
+    main{margin-top:-41px;position:relative;z-index:2;padding-bottom:42px}
+    .panel{background:#fff;border:1px solid var(--border);box-shadow:var(--shadow);border-radius:var(--radius);padding:30px 32px}
+    .section-kicker{font-size:12px;color:var(--blue);font-weight:850;letter-spacing:.1em}
+    .panel-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:7px}
+    h2{font-size:clamp(20px,3vw,26px);letter-spacing:-.055em;line-height:1.3;margin:8px 0 0}
+    .mini-chip{flex:0 0 auto;color:#245989;background:#eff7ff;border:1px solid #d8ebfd;border-radius:99px;font-size:12px;font-weight:750;padding:6px 11px;margin-top:7px}
+    .section-desc{margin:6px 0 25px;font-size:14px;color:var(--muted);word-break:keep-all}
+    .ai-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:17px}
+    .ai-card{width:100%;display:flex;align-items:center;gap:17px;min-height:137px;text-align:left;cursor:pointer;color:var(--text);background:#fff;border:1.5px solid #e1eaf3;border-radius:19px;padding:24px;position:relative;transition:transform .17s ease,border-color .17s ease,box-shadow .17s ease}
+    .ai-card:hover{transform:translateY(-3px);border-color:var(--card-accent);box-shadow:0 14px 32px rgba(24,66,113,.1)}
+    .ai-card:active{transform:translateY(0)}
+    .logo{flex:0 0 68px;width:68px;height:68px;display:grid;place-items:center;border-radius:19px;background:var(--logo-bg);color:var(--card-accent)}
+    .logo svg{width:43px;height:43px}
+    .ai-meta{min-width:0;flex:1}
+    .ai-meta strong{display:block;font-weight:850;font-size:24px;line-height:1.3;letter-spacing:-.045em}
+    .ai-meta small{display:block;font-size:13px;color:#657990;margin-top:8px;line-height:1.5;word-break:keep-all}
+    .card-arrow{flex:0 0 auto;color:var(--card-accent)}
+    .openai{--card-accent:#087e6f;--logo-bg:#e7f7f2}
+    .claude{--card-accent:#b65e41;--logo-bg:#fff0e9}
+    .gemini{--card-accent:#5865d9;--logo-bg:#f1eeff}
+    .perplexity{--card-accent:#007c91;--logo-bg:#e4f7f9}
+    .notice{margin-top:22px;display:flex;align-items:flex-start;gap:11px;border-radius:14px;background:#f2f7fc;border:1px solid #e1ecf6;padding:14px 16px;color:#506882;font-size:13px;line-height:1.75;word-break:keep-all}
+    .notice svg{flex:0 0 20px;color:#2880b7;margin-top:2px}
+    .below{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}
+    .below .panel{padding:26px 28px;box-shadow:none}
+    .steps{list-style:none;margin:20px 0 0;padding:0;display:grid;gap:15px}
+    .steps li{display:flex;align-items:flex-start;gap:13px;font-size:14px;color:#496078}
+    .step-num{width:28px;height:28px;display:grid;place-items:center;border-radius:9px;font-weight:850;color:#1265af;background:#edf6ff;flex:0 0 auto}
+    .steps strong{color:#173956}
+    details{margin-top:14px;border-radius:12px;border:1px solid #dbe8f4;background:#fbfdff}
+    details summary{padding:13px 14px;cursor:pointer;color:#205785;font-weight:750;font-size:13px;user-select:none}
+    .extra{padding:0 14px 14px}
+    textarea{display:block;width:100%;min-height:135px;border-radius:10px;border:1px solid #d3dfed;background:#fff;color:#233e57;padding:12px;line-height:1.65;resize:vertical;font-size:13px}
+    .extra-help{font-size:12px;color:#6c7d8f;margin:9px 0 0}
+    .outline-btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;background:#fff;border:1px solid #b7d2e7;color:#185889;border-radius:10px;font-weight:800;font-size:13px;padding:10px 13px;cursor:pointer;transition:background .15s}
+    .outline-btn:hover{background:#f2f8fd}
+    .prompt-preview{display:none;margin-top:16px}
+    .prompt-preview.visible{display:block}
+    .prompt-preview textarea{min-height:230px}
+    .small-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+    .panel-help{font-size:13px;color:var(--muted);margin:11px 0 0;line-height:1.85;word-break:keep-all}
+    .footer{text-align:center;color:#8091a2;font-size:12px;padding:2px 10px 33px;line-height:1.8}
+    .footer a{color:#436c95}
+    .toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,16px);background:#102d51;color:white;border:1px solid rgba(255,255,255,.1);border-radius:14px;box-shadow:0 18px 50px rgba(10,35,68,.25);padding:15px 20px;font-size:14px;line-height:1.6;max-width:calc(100vw - 28px);width:max-content;text-align:center;z-index:40;opacity:0;visibility:hidden;transition:opacity .2s,transform .2s,visibility .2s}
+    .toast.show{opacity:1;visibility:visible;transform:translate(-50%,0)}
+    .toast strong{color:#a6e9ff}
+    @media(max-width:760px){.hero{padding:60px 0 76px}.ai-grid,.below{grid-template-columns:1fr}.top-label{display:none}.panel{padding:25px 19px}.below .panel{padding:22px 20px}.ai-card{min-height:115px;padding:19px}.logo{width:59px;height:59px;flex-basis:59px}.logo svg{width:39px;height:39px}.ai-meta strong{font-size:21px}}
+    @media(max-width:410px){.shell{width:min(100% - 28px,1040px)}.hero{padding:53px 0 74px}.logo{flex-basis:53px;width:53px;height:53px;border-radius:15px}.ai-card{gap:12px;padding:17px}.ai-meta strong{font-size:20px}.panel-heading{display:block}.mini-chip{display:inline-block;margin-top:10px}.toast{font-size:13px}}
+    @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important}}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="shell">
+      <div class="topbar">
+        <div class="brand"><span class="brand-mark" aria-hidden="true"><svg width="21" height="21" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h10M4 17h16" stroke="white" stroke-width="2" stroke-linecap="round"/><circle cx="18" cy="12" r="2.5" fill="#87d9ff"/></svg></span> 관측업무 · AI 공유 도구</div>
+        <div class="top-label">2026 관측업무개선발표회 · 실무 활용 자료</div>
+      </div>
+      <div class="hero">
+        <div class="eyebrow"><i></i> AI WORK HISTORY → REUSABLE PROMPT</div>
+        <h1>AI로 만든 결과를,<br>누구나 이어갈 수 있도록.</h1>
+        <p>업무 목적부터 <b>전체 수행과정 · 변경사항 · 검증이력</b>까지 한 번에 정리하고,<br class="hero-break">다른 AI에서도 활용할 수 있는 <b>범용 인계 프롬프트</b>를 만들어 보세요.</p>
+      </div>
+    </div>
+  </header>
+  <main class="shell">
+    <section class="panel" aria-labelledby="choose-title">
+      <div class="panel-heading">
+        <div><div class="section-kicker">01 · AI 선택</div><h2 id="choose-title">어떤 AI에서 실행할까요?</h2></div>
+        <span class="mini-chip">AI별 맞춤 프롬프트 4종</span>
+      </div>
+      <p class="section-desc">AI별 특성에 맞춘 프롬프트를 복사하고 해당 AI 사이트를 엽니다. 결과물 구성은 동일합니다.</p>
+      <div class="ai-grid" role="group" aria-label="AI 선택 및 프롬프트 복사">
+        <button class="ai-card openai" type="button" data-ai="chatgpt" aria-label="ChatGPT 맞춤 프롬프트 복사 후 ChatGPT 열기">
+          <span class="logo" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none"><g stroke="currentColor" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"><path d="M32 9C22 7 15 15 18 23 8 27 8 39 17 43c1 11 14 16 21 10 11 3 20-5 18-14 8-8 3-21-7-22C45 9 38 7 32 9Z"/><path d="m22 19 20 11-10 19M45 20 22 34l21 10M18 37l17-18"/></g></svg></span>
+          <span class="ai-meta"><strong>ChatGPT</strong><small>수행 흐름 복원 · 복사 후 열기</small></span>
+          <svg class="card-arrow" width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="ai-card claude" type="button" data-ai="claude" aria-label="Claude 맞춤 프롬프트 복사 후 Claude 열기">
+          <span class="logo" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none"><g stroke="currentColor" stroke-width="6" stroke-linecap="round"><path d="M32 7v15M32 42v15M7 32h15M42 32h15M14 14l11 11M39 39l11 11M50 14 39 25M25 39 14 50"/></g><circle cx="32" cy="32" r="7" fill="currentColor"/></svg></span>
+          <span class="ai-meta"><strong>Claude</strong><small>변경·검증 근거 분석 · 복사 후 열기</small></span>
+          <svg class="card-arrow" width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="ai-card gemini" type="button" data-ai="gemini" aria-label="Gemini 맞춤 프롬프트 복사 후 Gemini 열기">
+          <span class="logo" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none"><defs><linearGradient id="geminiGradient" x1="6" y1="54" x2="55" y2="9" gradientUnits="userSpaceOnUse"><stop stop-color="#3989ed"/><stop offset=".5" stop-color="#9967dd"/><stop offset="1" stop-color="#ed759f"/></linearGradient></defs><path d="M32 4C34 21 43 30 60 32 43 34 34 43 32 60 30 43 21 34 4 32 21 30 30 21 32 4Z" fill="url(#geminiGradient)"/></svg></span>
+          <span class="ai-meta"><strong>Gemini</strong><small>다양한 첨부자료 통합 · 복사 후 열기</small></span>
+          <svg class="card-arrow" width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="ai-card perplexity" type="button" data-ai="perplexity" aria-label="Perplexity 맞춤 프롬프트 복사 후 Perplexity 열기">
+          <span class="logo" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3.1" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18h36v29L32 58 14 47V18ZM21 18V7l11 11L43 7v11M14 27l18 12 18-12M32 18v40M14 47l18-8 18 8"/></svg></span>
+          <span class="ai-meta"><strong>Perplexity</strong><small>출처 교차검증 · 복사 후 열기</small></span>
+          <svg class="card-arrow" width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+      <div class="notice"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/><path d="M12 11v6m0-10h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><div><b>사용 팁</b> — 과거 작업 과정이 남아 있는 <b>기존 채팅</b>에서 프롬프트를 실행하면 더 정확하게 요약할 수 있습니다. 새 AI 채팅을 열면 이전 서비스의 대화나 파일이 자동으로 전달되지는 않습니다.</div></div>
+    </section>
+    <div class="below">
+      <section class="panel" aria-labelledby="howto-title">
+        <div class="section-kicker">02 · 사용 방법</div><h2 id="howto-title">세 단계면 충분합니다</h2>
+        <ol class="steps">
+          <li><span class="step-num">1</span><span><strong>AI 버튼 선택</strong> — 해당 AI 맞춤 프롬프트 복사</span></li>
+          <li><span class="step-num">2</span><span><strong>AI 채팅 열기</strong> — <b>Ctrl+V</b> 또는 길게 눌러 붙여넣기</span></li>
+          <li><span class="step-num">3</span><span><strong>결과 검토</strong> — 수행과정 요약과 인계 프롬프트 확보</span></li>
+        </ol>
+        <p class="panel-help">프롬프트에는 업무 목적, 입력자료, 처리조건, 주요 변경·오류, 검증·수정이력, 현재 상태와 다음 작업이 포함됩니다.</p>
+      </section>
+      <section class="panel" aria-labelledby="detail-title">
+        <div class="section-kicker">03 · 선택 기능</div><h2 id="detail-title">인계할 정보가 더 있다면</h2>
+        <p class="panel-help">다른 AI에서 이어서 작업하려면 아래에 기존 요약을 붙여넣어 해당 AI 맞춤 프롬프트와 함께 복사하세요. 입력 내용은 서버로 전송하거나 저장하지 않습니다.</p>
+        <details id="context-details">
+          <summary>기존 업무이력 붙여넣기 (선택)</summary>
+          <div class="extra"><label for="context" class="section-kicker">추가 업무이력 / 인계 자료</label><textarea id="context" maxlength="20000" placeholder="예: 작업 목적, 수행과정, 구현 코드, 검증 결과, 오류·수정사항 등을 붙여넣으세요."></textarea><p class="extra-help"><span id="count">0</span> / 20,000자 · 브라우저에 저장하지 않음</p></div>
+        </details>
+        <label class="section-kicker" for="model-select" style="display:block;margin-top:18px;margin-bottom:7px">미리보기 및 복사할 AI</label><select id="model-select" aria-label="프롬프트 종류 선택" style="width:100%;max-width:360px;padding:11px 14px;border:1px solid #ccdce9;border-radius:11px;background:white;color:#163c5c;font-size:15px;font-weight:700"><option value="chatgpt">ChatGPT · 수행 흐름 복원</option><option value="claude">Claude · 결정·검증 근거</option><option value="gemini">Gemini · 이종 자료 통합</option><option value="perplexity">Perplexity · 출처 검증</option></select><div class="small-actions"><button class="outline-btn" id="preview-toggle" type="button" aria-expanded="false">프롬프트 미리보기</button><button class="outline-btn" id="copy-only" type="button">선택 프롬프트 복사</button></div>
+        <div class="prompt-preview" id="prompt-preview" aria-label="범용 프롬프트 미리보기"><textarea id="prompt-text" readonly aria-label="범용 프롬프트 본문"></textarea></div>
+      </section>
+    </div>
+  </main>
+  <footer class="footer">관측업무의 결과뿐 아니라 <b>재현할 수 있는 방법</b>까지 남깁니다.<br>이 페이지는 프롬프트 공유용 정적 웹사이트이며, 입력한 내용을 저장하거나 서버로 전송하지 않습니다. 기관 내부자료를 공개 AI에 입력하지 마세요.</footer>
+  <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+  <script>
+    'use strict';
+    const aiTargets = Object.freeze({
+      chatgpt: {name:'ChatGPT',url:'https://chatgpt.com/'},
+      claude: {name:'Claude',url:'https://claude.ai/'},
+      gemini: {name:'Gemini',url:'https://gemini.google.com/app'},
+      perplexity: {name:'Perplexity',url:'https://www.perplexity.ai/'}
+    });
+    const CORE_PROMPT = "당신은 '검증 가능한 업무이력 관리 및 AI 업무자산화' 담당자입니다.\n\n[공통 목표]\n현재 채팅에서 실제로 열람할 수 있는 대화, 프로젝트·첨부자료, 사용자가 별도로 제공한 자료를 근거로 최초 목적부터 현 상태까지의 전체 수행과정을 요약하세요. 그 결과를 압축·구조화하여 다른 AI의 새 대화 또는 다음 담당자가 그대로 이해하고 이어갈 수 있는 '독립형 인계 프롬프트'를 작성하세요.\n\n[참조범위 및 자료의 신뢰도]\n- 지금 접근 가능한 자료만 사용하고, 접근한 대화·파일·문서 및 범위를 시작 부분에 밝히세요. 기억만으로 원문과 수치를 복원했다고 단정하지 마세요.\n- 자료의 성격을 (1) 실제 확인된 기록 (2) 사용자 진술·추가자료 (3) 검증 전 추정 (4) 확인 불가로 구분하세요.\n- 동일 항목이 상충하면 근거의 출처, 작성일, 버전 및 변경 이력을 표시하고 임의로 하나를 정답으로 확정하지 마세요.\n- 비공개 기상관측자료·인증정보·내부망 주소·개인정보 등은 외부 공개용 결과물에 넣지 말고 [내부자료: 별도보관]처럼 표기하세요.\n\n[반드시 수행할 업무]\n1. 업무 배경·문제·최초 목적과 최종 목표를 구분합니다.\n2. 전체 수행 과정을 최초 요청 → 핵심 요구사항 → 자료 수집 → 구현·분석 → 시행착오 → 수정·최적화 → 검증 → 현재 상태 순으로 재구성합니다. 중간에 변경된 요구사항과 변경 이유를 기록합니다.\n3. 원자료·파일명·관측기간·대상 지점·단위·시간대, 처리조건·수식·코드·실행환경, 산출물·사용법, 오류·수정·검증 증거를 수집합니다. 확인 가능한 항목만 쓰세요.\n4. 반복·폐기된 내용은 요약하되 결과 재현에 필요한 확정 조건, 처리 순서, 실패 원인, 해결 방법, 버전 차이 및 정량 검증 근거는 보존합니다.\n5. 제3자가 후속 작업을 수행하는 데 필요한 결정사항, 미해결 이슈, 추가 확보할 파일을 밝힙니다.\n6. 마지막으로 독립된 새 채팅에 붙여넣을 '재현 가능한 인계 프롬프트'를 작성합니다. 원 대화에 접근할 수 없는 AI도 이해할 수 있게 작업 배경·기준·현재 상태·다음 행동을 직접 포함하고, 자료가 없을 때의 대안을 명시하세요.\n\n[공통 출력 형식 — 반드시 준수]\nA. 전체 수행과정 요약 (8~12줄 이내, 핵심만)\nB. 변경·오류·수정·검증 이력표 [시기/버전 | 내용 | 조치·이유 | 근거 | 확정·미확인]\nC. 재현 필수정보 [업무목적 | 입력자료·출처 | 처리조건·실행환경 | 산출물 | 검증방법·결과]\nD. 다른 AI에 복사 가능한 독립형 최종 인계 프롬프트 (하나의 코드 블록, 핵심 이력을 실제 내용으로 채울 것)\nE. 남은 문제·추가 자료·인수인계 확인사항\n\n[검증 규칙]\n정확도·성공률·소요시간·건수 등 수치를 새로 꾸며내지 마세요. 검증률을 쓰려면 분자·분모·비교기준·예외처리와 원자료 근거를 함께 적으세요. '자료가 있어야 할 법한' 위치와 실제로 열람한 사실을 구분하세요. 모든 항목을 확인할 수 없더라도 확인된 부분으로 결과를 작성하고 부족한 부분에 [확인 필요]를 적으세요.";
+    const MODEL_INSTRUCTIONS = Object.freeze({
+      "chatgpt": "[ChatGPT 맞춤 수행 지침 — 맥락 기반 작업 복원]\n1. 현재 프로젝트 및 접근 가능한 대화·업로드·자료 소스를 우선 검토하세요. 과거 대화를 참조하는 기능이 활성화되지 않았거나 실제로 접근할 수 없다면, 확인된 현재 대화만 이용하세요.\n2. 요구사항이 어떻게 변해 왔는지 '처음 요청 → 중요한 피드백 → 최종 채택'으로 정리하세요. 최신 의사결정과 과거 폐기안을 혼동하지 마세요.\n3. 자료 수집·코드 수정·재검증 등 반복 루프에서 무엇이 해결됐고 무엇이 남았는지 '현재 작업상태'에 집중하세요.\n4. 이력표의 내용마다 근거가 되는 파일명·대화 시점·버전 또는 확인 가능한 문서 위치를 붙이세요. 링크를 확인할 수 없으면 만들어내지 마세요.\n5. 인계 프롬프트에는 새 AI의 첫 번째 실행 과제와 필요 첨부파일 체크리스트까지 포함하세요.",
+      "claude": "[Claude 맞춤 수행 지침 — 장문 원문 대조와 결정이력 감사]\n1. 현재 대화, 실제로 읽을 수 있는 프로젝트 지식·첨부 문서 등을 작업별로 분류하고, 긴 자료는 구간별로 검토한 뒤 하나의 일관된 연대표로 통합하세요.\n2. '최초 요구', '중간 수정', '최종 확정', '폐기·보류'를 엄격히 분리하세요. 동일 기능의 설계안이 충돌하면 근거를 대조하고 최종 채택 이유를 기록하세요.\n3. 오류·수정은 '증상 → 원인(확인/추정) → 변경 내용 → 재시험 근거 → 남은 위험'의 형태로 정리하세요. 문제가 해결됐다는 명시적 근거가 없으면 해결로 단정하지 마세요.\n4. 주요 주장에 가능한 범위에서 문서명·절/페이지·메시지 시점·코드 함수명 등 검토 가능한 근거를 연결하세요. 근거가 없는 문장은 [미검증]으로 표시하세요.\n5. 최종 인계 프롬프트는 배경 설명을 줄이되 '재현을 좌우하는 상세조건'을 잃지 않도록 작성하세요. 검토해야 할 충돌항목을 마지막에 별도로 제시하세요.",
+      "gemini": "[Gemini 맞춤 수행 지침 — 이종 첨부자료 통합]\n1. 현재 채팅에 첨부되어 접근 가능한 문서·시트·PDF·이미지·코드·동영상과, 사용자가 접근 권한을 부여한 Google Drive 자료의 종류와 파일명을 먼저 목록화하세요. 연동되지 않은 파일을 읽었다고 말하지 마세요.\n2. 텍스트의 요구사항, 표·시트의 수치, 이미지·화면의 표시, 코드의 처리 로직을 별도 근거로 분리해 추출한 뒤 서로 교차대조하세요.\n3. 기상관측자료라면 관측시각(KST/UTC), 시간해상도, 지점번호, 위·경도, 단위, 결측·품질관리 기준, 버전 정보를 확인하세요. 자료에 없으면 [확인 필요]로 남기세요.\n4. 화면 이미지나 자료표만으로 구현 기능의 정상 동작·정확도가 입증됐다고 단정하지 말고 검증기록과 연결하세요.\n5. 최종 인계 프롬프트에는 새 채팅에 다시 제공해야 할 첨부파일 목록과 파일별 역할, 불러오기 순서를 명시하세요.",
+      "perplexity": "[Perplexity 맞춤 수행 지침 — 출처 구분·외부 기준 확인]\n1. 최초 업무이력과 내부 수행성과는 현재 채팅 또는 사용자가 첨부한 기록을 1차 근거로 삼으세요. 웹의 유사 사례로 사용자의 실제 이력을 채우지 마세요.\n2. 출처를 [내부 수행기록] [사용자 제공자료] [외부 공식자료] [확인 불가] 네 가지로 구분하고 주요 사실마다 자료명·날짜·링크(확인된 경우만)를 명시하세요.\n3. 외부 검색이 가능하다면 법령·기술표준·공개 매뉴얼 등 외부 기준을 점검하는 데만 활용하세요. 최신 규정은 공식 출처와 확인일을 붙이고, 내부 작업 사실과 섞지 마세요. 외부 검색이 불필요하면 사용자가 제공한 자료만 활용하세요.\n4. 원문 출처가 없는 수치나 검증 결과, 끊어진 링크, 접근 불가 파일은 [확인 불가]로 표시하고 사실처럼 보완하지 마세요.\n5. 결과물에는 '확인된 내부 이력'과 '외부 근거 확인사항'을 구분하는 검증표를 넣고, 최종 인계 프롬프트에는 확인된 수행 사실만 담으세요."
+});
+    const extraArea = document.getElementById('context');
+    const toast = document.getElementById('toast');
+    let toastTimer;
+    const modelSelect = document.getElementById("model-select");
+
+    function getPrompt(model = modelSelect.value) {
+      const extra = extraArea.value.trim();
+      const specialized = MODEL_INSTRUCTIONS[model] || MODEL_INSTRUCTIONS.chatgpt;
+      return CORE_PROMPT + "\n\n" + specialized + (extra ? '\n\n[사용자가 별도로 제공한 기존 업무이력/참고자료]\n아래는 검증 전 사용자 제공 내용입니다. 원문으로 간주하고 사실관계를 확인하며 정리하세요.\n' + extra + '\n[추가 자료 끝]' : '');
+    }
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove('show'), 5200);
+    }
+    function fallbackCopy(value) {
+      const previous = document.activeElement;
+      const textarea = document.createElement('textarea');
+      textarea.value = value;
+      textarea.setAttribute('readonly', '');
+      textarea.style.cssText = 'position:fixed;top:10px;left:10px;opacity:0;z-index:-1;';
+      document.body.appendChild(textarea);
+      textarea.focus();textarea.select();textarea.setSelectionRange(0,value.length);
+      let result = false;
+      try {result = document.execCommand('copy');} catch (err) {result = false;}
+      textarea.remove();
+      if(previous && typeof previous.focus==='function') previous.focus({preventScroll:true});
+      return result;
+    }
+    async function clipboardCopy(value) {
+      if (fallbackCopy(value)) return true;
+      if (navigator.clipboard && window.isSecureContext) {
+        try {await navigator.clipboard.writeText(value);return true;} catch (_) {return false;}
+      }
+      return false;
+    }
+    function revealPrompt() {
+      const preview = document.getElementById('prompt-preview');
+      preview.classList.add('visible');
+      document.getElementById('preview-toggle').setAttribute('aria-expanded','true');
+      const area=document.getElementById('prompt-text');area.value=getPrompt();
+      return area;
+    }
+    function showCopyFallback() {
+      const area = revealPrompt();
+      area.focus();area.select();
+      showToast('자동 복사가 차단됐습니다. 아래 본문을 길게 눌러 직접 복사하세요.');
+      area.scrollIntoView({behavior:'smooth',block:'nearest'});
+    }
+    document.querySelectorAll('[data-ai]').forEach(button=>{
+      button.addEventListener('click', () => {
+        const ai = aiTargets[button.dataset.ai];
+        if(!ai) return;
+        const prompt=getPrompt(button.dataset.ai);
+        modelSelect.value = button.dataset.ai;
+        if(document.getElementById("prompt-preview").classList.contains("visible")) document.getElementById("prompt-text").value=prompt;
+        // 동기식 복사를 우선 시도해 팝업 차단 없이 새 탭을 여는 안정성을 높입니다.
+        if(fallbackCopy(prompt)) {
+          const tab = window.open(ai.url,'_blank','noopener,noreferrer');
+          showToast(ai.name + ' 맞춤 프롬프트 복사 완료. 이력에 접근 가능한 기존 채팅에 붙여넣거나 새 채팅에 자료를 추가하세요.');
+          if(!tab) showToast('프롬프트 복사 완료! ' + ai.name + ' 새 탭이 열리지 않으면 팝업 허용 후 다시 눌러주세요.');
+          return;
+        }
+        // 클립보드 API가 필요한 브라우저: 사용자 클릭 중 즉시 새 탭을 요청합니다.
+        const pendingCopy=(navigator.clipboard && window.isSecureContext)
+          ? navigator.clipboard.writeText(prompt).then(()=>true,()=>false)
+          : Promise.resolve(false);
+        window.open(ai.url,'_blank','noopener,noreferrer');
+        pendingCopy.then(ok=>{
+          if(ok) showToast(ai.name + ' 프롬프트 복사 완료! AI 채팅에서 붙여넣으세요.');
+          else showCopyFallback();
+        });
+      });
+    });
+    document.getElementById('preview-toggle').addEventListener('click',()=>{
+      const preview=document.getElementById('prompt-preview');
+      if(preview.classList.contains('visible')) {
+        preview.classList.remove('visible');
+        document.getElementById('preview-toggle').setAttribute('aria-expanded','false');
+      } else revealPrompt();
+    });
+    document.getElementById('copy-only').addEventListener('click',async()=>{
+      if(await clipboardCopy(getPrompt())) showToast(aiTargets[modelSelect.value].name + ' 맞춤 프롬프트를 복사했습니다. 기존 AI 채팅에 붙여넣으세요.');
+      else showCopyFallback();
+    });
+    modelSelect.addEventListener('change',()=>{ if(document.getElementById('prompt-preview').classList.contains('visible')) document.getElementById('prompt-text').value=getPrompt(); });
+    extraArea.addEventListener('input',()=>{
+      document.getElementById('count').textContent=extraArea.value.length.toLocaleString('ko-KR');
+      if(document.getElementById('prompt-preview').classList.contains('visible')) document.getElementById('prompt-text').value=getPrompt();
+    });
+  </script>
+</body>
+</html>
